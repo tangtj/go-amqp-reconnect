@@ -1,6 +1,7 @@
 package rabbitmq
 
 import (
+	"context"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -254,6 +255,18 @@ func (ch *Channel) Publish(exchange, key string, mandatory, immediate bool, msg 
 	defer ch.mutex.Unlock()
 	ch.mutex.Lock()
 	return ch.Channel.Publish(exchange, key, mandatory, immediate, amqp.Publishing(msg))
+}
+
+func (ch *Channel) PublishWithContext(_ context.Context, exchange, key string, mandatory, immediate bool, msg Publishing) error {
+	defer ch.mutex.Unlock()
+	ch.mutex.Lock()
+	return ch.Publish(exchange, key, mandatory, immediate, msg)
+}
+
+func (ch *Channel) PublishWithDeferredConfirm(exchange, key string, mandatory, immediate bool, msg Publishing) (*amqp.DeferredConfirmation, error) {
+	defer ch.mutex.Unlock()
+	ch.mutex.Lock()
+	return ch.Channel.PublishWithDeferredConfirm(exchange, key, mandatory, immediate, amqp.Publishing(msg))
 }
 
 func (ch *Channel) ExchangeUnbind(destination, key, source string, noWait bool, args amqp.Table) error {
