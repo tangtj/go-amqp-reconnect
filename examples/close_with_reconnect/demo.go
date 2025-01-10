@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/AsidStorm/go-amqp-reconnect/rabbitmq"
+	"go-amqp-reconnect/rabbitmq"
 )
 
 func main() {
